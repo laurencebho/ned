@@ -8,9 +8,8 @@ def make_mw_request(params):
     '''
     make a request to the MediaWiki API
     '''
-    session = requests.Session()
     url = 'https://en.wikipedia.org/w/api.php'
-    r = session.get(url=url, params=params)
+    r = requests.get(url=url, params=params)
     return r.json()
 
 

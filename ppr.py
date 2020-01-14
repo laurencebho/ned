@@ -2,7 +2,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 import pprint
 
-from lib import get_candidates, edge_between, find_most_linked
+from wiki import get_candidates, edge_between, find_most_linked
 
 def add_candidates(title, candidates, G):
     for candidate in candidates:
