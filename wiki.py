@@ -1,7 +1,10 @@
 import requests
+import os.path as op
 
 from wikidata.client import Client
 import mwclient
+
+import settings
 
 
 def make_mw_request(params):
@@ -11,6 +14,111 @@ def make_mw_request(params):
     url = 'https://en.wikipedia.org/w/api.php'
     r = requests.get(url=url, params=params)
     return r.json()
+
+
+def get_pageviews(title):
+    '''
+    make a request to the Wikimedia API to get
+    the pageviews of a page by title
+    '''
+    url=(
+        'https://wikimedia.org/api/rest_v1/'
+        'metrics/'
+        'pageviews/'
+        'per-article/'
+        'en.wikipedia/'
+        'all-access/'
+        'all-agents/'
+        f'{title}/'
+        'monthly/'
+        f'{settings.date_handler.start}/'
+        f'{settings.date_handler.end}'
+    )
+    r = requests.get(url=url)
+    data = r.json()
+    monthly_views = data['items']
+    prev_month_views = int(monthly_views[-1]['views'])
+    return prev_month_views
+
+
+def request_links(title, plcontinue=None):
+    '''
+    make a single request for a page's links
+
+    :param title: the title of the page to get links for
+
+    :param plcontinue: a reference for the API specifying
+    the point down the page to continue returning links from
+    '''
+    params = {
+        'action': 'query',
+        'format': 'json',
+        'prop': 'links',
+        'pllimit': '500',
+        'titles': title,
+    }
+    if plcontinue is not None:
+        params['plcontinue'] = plcontinue
+    data = make_mw_request(params)
+    pages = data['query']['pages']
+    links = []
+    for _, page in pages.items():
+        if 'links' in page:
+            for link in page['links']:
+                links.append(link['title'])
+    if 'continue' in data:
+        plcontinue = data['continue']['plcontinue']
+    else:
+        plcontinue = None
+    return links, plcontinue
+
+
+def generate_links_dict(titles):
+    '''
+    create a dictionary of title:list pairs
+    where each list contains the titles of all
+    links on a page
+
+    :param titles: a list of article titles
+    '''
+    links_dict = {}
+    for title in titles:
+        links = [] #list of links for a single title
+        plcontinue = None
+        while True:
+            new_links, plcontinue = request_links(title, plcontinue)
+            links += new_links
+            if plcontinue is None:
+                break
+        links_dict[title] = links
+    return links_dict
+        
+
+def lookup_link(page_title, target_title, links_dict):
+    '''
+    determine if a page links to a target page using a
+    dictionary of pages and their contained links.
+    returns a boolean
+
+    :param page_title: title of page
+    :param target_title: title of the link to look
+    for on the page
+    :param links_dict: the dictionary to search
+    '''
+    return target_title in links_dict[page_title]
+
+
+def check_edge(title1, title2, links_dict):
+    '''
+    determines whether to add an undirected edge between
+    two pages
+
+    :param title1: the title of the first page
+    :param title2: the title of the second page
+    :param links_dict: dictionary of pages and their
+    contained links to use for lookup
+    '''
+    return lookup_link(title1, title2, links_dict) or lookup_link (title2, title1, links_dict)
 
 
 def link_between(page_title, target_title):
@@ -117,7 +225,6 @@ def find_most_linked(titles):
     return titles[0]
 
 
-
 def check_exact_match(title):
     '''
     check if there is a Wikipedia page
@@ -205,3 +312,42 @@ def get_candidates(title):
     exact_match = check_exact_match(title)
     if exact_match:
         return [title]
+
+
+def trim_candidates(candidates, lower_count, fraction, heuristic='pageviews'):
+    '''
+    use a popularity heuristic to rank candidates
+    by popularity, then take a percentage of the
+    most popular
+
+    :param candidates: a list of article titles
+    :param lower_count: min number of candidates to return
+    :param fraction: threshold fraction
+    :param heuristic: a string, either 'backlinks'
+    or 'pageviews'
+    '''
+    if len(candidates) <= lower_count:
+        return candidates
+    else:
+        threshold = int(max(lower_count, (fraction * len(candidates) // 1)))
+        pageviews_dict = {}
+        for i, candidate in enumerate(candidates):
+            pageviews_dict[i] = get_pageviews(candidate)
+        sorted_candidates = [k for k, v in sorted(pageviews_dict.items(), key=lambda item: item[1])]
+        return sorted_candidates[:threshold]
+
+
+def get_wikitext(title):
+    '''
+    get the wikitext of a page for parsing
+
+    :param title: the title of the page to fetch
+    '''
+    params = {
+        'action': 'parse',
+        'format': 'json',
+        'page': title,
+        'prop': 'wikitext'
+    }
+    data = make_mw_request(params)
+    return data['parse']['wikitext']['*']
