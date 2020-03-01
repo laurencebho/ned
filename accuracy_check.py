@@ -60,7 +60,7 @@ def calculate_accuracy(wikipedia_dict, disambiguations_dict):
 
 
 def main():
-    settings.init()
+    settings.init('en')
     wikitext = get_wikitext(sys.argv[1])
     wiki_dict = find_wikitext_links(wikitext)
     entities = get_entities(sys.argv[2])

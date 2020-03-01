@@ -1,5 +1,7 @@
 import requests
 import os.path as op
+import vcr
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from wikidata.client import Client
 import mwclient
@@ -11,9 +13,21 @@ def make_mw_request(params):
     '''
     make a request to the MediaWiki API
     '''
-    url = 'https://en.wikipedia.org/w/api.php'
-    r = requests.get(url=url, params=params)
-    return r.json()
+    with settings.VCR.use_cassette('fixtures/cassettes/all.yaml'):
+        url = f'https://{settings.LANG}.wikipedia.org/w/api.php'
+        #r = requests.get(url=url, params=params)
+        r = settings.SESSION.get(url=url, params=params)
+        return r.json()
+
+
+def parallelise_requests(f, *args):
+    results = {}
+    with ThreadPoolExecutor(max_workers=10) as e:
+        params = zip(args)
+        futures_dict = {e.submit(f(*tup)) for tup in params}
+        for future in as_completed(futures_dict):
+            results[futures_dict[future[0]]] = future.result()
+    return results
 
 
 def get_pageviews(title):
@@ -189,6 +203,27 @@ def count_backlinks(title, blcontinue=None):
     return count, blcontinue
 
 
+def create_backlinks_count_dict(candidates):
+    '''
+    creates a dictionary of title:backlinks_count pairs
+
+    :param candidates: a list of candidate titles
+    '''
+    backlinks_count_dict = {}
+    for candidate in candidates:
+        total = 0
+        blcontinue = None
+        while True:
+            count, blcontinue = count_backlinks(candidate, blcontinue)
+            print(count)
+            if  blcontinue is None:
+                print('done')
+                break
+            total += count
+        backlinks_count_dict[candidate] = total
+    return backlinks_count_dict
+
+
 def compare_backlinks(title1, title2):
     '''
     return the title with the most backlinks
@@ -205,7 +240,7 @@ def compare_backlinks(title1, title2):
         elif t2_count > t1_count:
             return title2
         elif t1_count == t2_count and t1_count < 500:
-            return 'there seems to be a tie'
+            return (title1, title2)
 
 
 def find_most_linked(titles):

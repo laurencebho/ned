@@ -1,7 +1,7 @@
 import csv
 import re
 import pprint
-
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from ppr import ned
 import settings
@@ -55,11 +55,35 @@ def test_performance():
     
     final_percentage = 100 * grand_correct / grand_total
     print(f'overall accuracy: {final_percentage}%')
+    
+
+def test_performance_parallel():
+    grand_correct, grand_total = 0, 0
+    aida_dict = create_aida_dict()
+    with ThreadPoolExecutor(max_workers=4) as e:
+        futures_dict = {e.submit(disambiguate, doc) for doc in aida_dict.values()}
+        for future in as_completed(futures_dict):
+            correct, total = future.result()
+            grand_correct += correct
+            grand_total += total
+            print('another one')
+    
+    final_percentage = 100 * grand_correct / grand_total
+    print(f'overall accuracy: {final_percentage}%')
+
+
+def disambiguate(doc):
+    entities = list(doc.keys())
+    disambiguations = ned(entities)
+    correct, total = count_correct(doc, disambiguations)
+    percentage = 100 * correct / total
+    settings.logger.info(f'accuracy for {doc}: {percentage}%')
+    return correct, total
 
 
 def main():
-    settings.init()
-    test_performance()
+    settings.init('en')
+    test_performance_parallel()
 
 
 if __name__ == '__main__':

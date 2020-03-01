@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 import logging
 import colorlog
+import vcr
+import requests
 
 
 def setup_logger():
@@ -41,8 +43,18 @@ class DateHandler:
         self._start = start
 
 
-def init():
+def init(language):
     global date_handler
     global logger
+    global LANG
+    global VCR
+    global SESSION
+
     date_handler = DateHandler()
     logger = setup_logger()
+    LANG = language
+    VCR = vcr.VCR(
+        cassette_library_dir='fixtures/cassettes',
+        record_mode='all',
+    )
+    SESSION = requests.session()

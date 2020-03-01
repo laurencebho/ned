@@ -6,7 +6,8 @@ import argparse
 import json
 
 from wiki import (get_candidates, edge_between, find_most_linked,
-generate_links_dict, check_edge, get_pageviews, trim_candidates)
+generate_links_dict, check_edge, get_pageviews, trim_candidates,
+create_backlinks_count_dict, parallelise_requests)
 import settings
 
 from cnlp_utils import get_entities
@@ -24,15 +25,6 @@ def add_edges_uncached(G):
                     if edge_between(G.nodes[u]['candidate'], G.nodes[v]['candidate']):
                         G.add_edge(u, v)
 
-
-def add_edges(G, titles):
-    links_dict = generate_links_dict(titles)
-    for u in G.nodes():    
-        for v in G.nodes():
-            if G.nodes[u]['mention'] != G.nodes[v]['mention']:
-                if check_edge(G.nodes[u]['candidate'], G.nodes[v]['candidate'], links_dict):
-                    G.add_edge(u, v)
-    
 
 def ppr(G):
     personalization = {}
@@ -69,11 +61,10 @@ def manual_ppr(G, iterations, d):
         v.shape = n
         S[:,i] = v[:]
     
-    compute_final_scores(G, S)
-    return G
+    return G, S
 
 
-def compute_final_scores(G, S):
+def compute_final_scores_pageviews(G, S):
     n = S.shape[0]
 
     pageviews = []
@@ -88,6 +79,25 @@ def compute_final_scores(G, S):
                 mention = v['mention']
                 if mention != u['mention']:
                     score = S[i, j] * pageviews[j]
+                    if mention not in mention_max_scores or score > mention_max_scores[mention][1]:
+                        mention_max_scores[mention] = (v['candidate'], score)
+        u['score'] = sum([val[1] for val in mention_max_scores.values()])
+
+
+
+def compute_final_scores(G, S, links_dict, backlinks_count_dict):
+    n = S.shape[0]
+
+    for i in range(n):
+        mention_max_scores = {}
+        u = G.nodes[i]
+        for j in range(n):
+            if i != j:
+                v = G.nodes[j]
+                mention = v['mention']
+                if mention != u['mention']:
+                    #multiply by the count of the backlinks
+                    score = S[i, j] #* (backlinks_count_dict[v['candidate']]) #+ len(links_dict[v['candidate']]))
                     if mention not in mention_max_scores or score > mention_max_scores[mention][1]:
                         mention_max_scores[mention] = (v['candidate'], score)
         u['score'] = sum([val[1] for val in mention_max_scores.values()])
@@ -140,30 +150,6 @@ def resolve_ties(disambiguations):
     return disambiguations
 
 
-def nx_ned(entities):
-    all_candidates = []
-    G = nx.Graph()
-    total = 0
-    for e in entities:
-        candidates = get_candidates(e)
-        if candidates is not None:
-            settings.logger.info(f'adding candidates for {e}')
-            all_candidates += candidates
-            add_candidates(e, candidates, G)
-            total += len(candidates)
-    settings.logger.info(f'total nodes: {total}')
-    settings.logger.info(f'adding edges')
-    add_edges(G, all_candidates)
-
-    settings.logger.info(f'performing PPR')
-    ppr_scores = ppr(G)
-    settings.logger.info('collecting results')
-    results = collect_results(G, ppr_scores)
-    disambiguations = get_disambiguations(results)
-    disambiguations = resolve_ties(disambiguations)
-    return disambiguations
-
-
 def ned(entities):
     all_candidates = []
     G = nx.Graph()
@@ -177,11 +163,16 @@ def ned(entities):
             add_candidates(e, candidates, G)
             total += len(candidates)
     settings.logger.info(f'total nodes: {total}')
+    settings.logger.info('fetching links for all candidates')
+    links_dict = generate_links_dict(all_candidates)
+    #backlinks_count_dict = create_backlinks_count_dict(all_candidates)
+    backlinks_count_dict = {}
     settings.logger.info(f'adding edges')
-    add_edges(G, all_candidates)
+    add_edges(G, all_candidates, links_dict)
 
     settings.logger.info(f'performing PPR')
-    G = manual_ppr(G, 20, 0.85)
+    G, S = manual_ppr(G, 20, 0.85)
+    compute_final_scores(G, S, links_dict, backlinks_count_dict)
     disambiguations = collect_disambiguations(G)
     return disambiguations
 
@@ -206,12 +197,14 @@ def setup_parser():
         help='path to the input file (JSON, CSV or TSV) to extract entities from')
     parser.add_argument('outfile',
         help='path to the output JSON file to save disambiguations')
+    parser.add_argument('-l', '--language', help='language', default='en')
     return parser
 
 
 def main():
     parser = setup_parser()
     args = parser.parse_args()
+    settings.init(args.language)
 
     entities = get_entities(args.infile)
     #get disambiguations and format them into a printable string
@@ -222,7 +215,6 @@ def main():
     
 
 if __name__ == '__main__':
-    settings.init()
     main()
     '''
     #display the graph
