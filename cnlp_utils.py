@@ -1,5 +1,9 @@
 import json
 
+
+##NOTE : MODIFY THIS TO ONLY HAVE LOCATION, PERSON, ORGANIZATION (look in the json files for details)
+
+
 def get_entities(filename):
     '''
     opens a json file produced by CoreNLP and

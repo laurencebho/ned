@@ -26,6 +26,14 @@ def add_edges_uncached(G):
                         G.add_edge(u, v)
 
 
+def add_edges(G, titles, links_dict):
+    for u in G.nodes():    
+        for v in G.nodes():
+            if G.nodes[u]['mention'] != G.nodes[v]['mention']:
+                if check_edge(G.nodes[u]['candidate'], G.nodes[v]['candidate'], links_dict):
+                    G.add_edge(u, v)
+    
+
 def ppr(G):
     personalization = {}
     for node in G.nodes():
@@ -150,6 +158,41 @@ def resolve_ties(disambiguations):
     return disambiguations
 
 
+def build_graph(entities):
+    '''
+    this function is the same as the top part of the ned function
+    '''
+    all_candidates = []
+    G = nx.Graph()
+    total = 0
+    for e in entities:
+        candidates = get_candidates(e)
+        #candidates = trim_candidates(candidates, 3, 0.4)
+        if candidates is not None:
+            settings.logger.info(f'adding candidates for {e}')
+            all_candidates += candidates
+            add_candidates(e, candidates, G)
+            total += len(candidates)
+    settings.logger.info(f'total nodes: {total}')
+    settings.logger.info('fetching links for all candidates')
+    links_dict = generate_links_dict(all_candidates)
+    #backlinks_count_dict = create_backlinks_count_dict(all_candidates)
+    backlinks_count_dict = {}
+    settings.logger.info(f'adding edges')
+    add_edges(G, all_candidates, links_dict)
+    return G, links_dict, {}
+
+
+def analyse_graph(G, links_dict, backlinks_count_dict):
+    '''
+    this function is the bottom part of the ned function
+    '''
+    G, S = manual_ppr(G, 20, 0.85)
+    compute_final_scores(G, S, links_dict, backlinks_count_dict)
+    disambiguations = collect_disambiguations(G)
+    return disambiguations
+
+
 def ned(entities):
     all_candidates = []
     G = nx.Graph()
@@ -198,13 +241,14 @@ def setup_parser():
     parser.add_argument('outfile',
         help='path to the output JSON file to save disambiguations')
     parser.add_argument('-l', '--language', help='language', default='en')
+    parser.add_argument('-r', '--replay', help='replay requests', action='store_true')
     return parser
 
 
 def main():
     parser = setup_parser()
     args = parser.parse_args()
-    settings.init(args.language)
+    settings.init(args.language, args.replay)
 
     entities = get_entities(args.infile)
     #get disambiguations and format them into a printable string

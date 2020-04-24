@@ -43,18 +43,22 @@ class DateHandler:
         self._start = start
 
 
-def init(language):
+def init(language='en', replaying=False):
     global date_handler
     global logger
     global LANG
     global VCR
     global SESSION
+    global REPLAYING
+    global PARALLEL
 
     date_handler = DateHandler()
     logger = setup_logger()
     LANG = language
     VCR = vcr.VCR(
         cassette_library_dir='fixtures/cassettes',
-        record_mode='all',
+        record_mode='once',
     )
     SESSION = requests.session()
+    REPLAYING = replaying
+    PARALLEL = False #only set true when parallelising requests

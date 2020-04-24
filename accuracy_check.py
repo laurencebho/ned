@@ -7,6 +7,12 @@ check how many disambiguate to the correct link
 
 This produces the accuracy metric
 
+you run it like:
+
+python accuracy_check.py title filename
+
+where title is the article title and filename is the json file output by CoreNLP
+
 '''
 import re
 import sys

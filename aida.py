@@ -3,13 +3,14 @@ import re
 import pprint
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from ppr import ned
+from ppr import ned, build_graph, analyse_graph
 import settings
 
 
 def extract_docname(s):
     pattern = re.compile(r'\((.*)\)')
     return re.findall(pattern, s)[0]
+
 
 def create_aida_dict():
     with open('aida_annotations.tsv') as fr:
@@ -58,12 +59,24 @@ def test_performance():
     
 
 def test_performance_parallel():
+    settings.PARALLEL = True
     grand_correct, grand_total = 0, 0
     aida_dict = create_aida_dict()
     with ThreadPoolExecutor(max_workers=4) as e:
-        futures_dict = {e.submit(disambiguate, doc) for doc in aida_dict.values()}
+        doc_ents = []
+        for doc_name, d in aida_dict.items():
+            doc_ents.append((doc_name, list(d.keys())))
+        futures_dict = {e.submit(build_graph, ents) : doc_name for doc_name, ents in doc_ents}
         for future in as_completed(futures_dict):
-            correct, total = future.result()
+            doc_name = futures_dict[future]
+            G, links_dict, backlinks_count_dict = future.result()
+
+            #perform the more computationally intense step not in parallel
+            disambiguations = analyse_graph(G, links_dict, backlinks_count_dict)
+            correct, total = count_correct(aida_dict[doc_name], disambiguations)
+            print(f'{doc_name} has {total} total terms of which {correct} are correct')
+            percentage = 100 * correct / total
+            settings.logger.info(f'accuracy for {doc_name}: {percentage}%')
             grand_correct += correct
             grand_total += total
             print('another one')
@@ -73,6 +86,9 @@ def test_performance_parallel():
 
 
 def disambiguate(doc):
+    '''
+    deprecated as a function
+    '''
     entities = list(doc.keys())
     disambiguations = ned(entities)
     correct, total = count_correct(doc, disambiguations)
@@ -82,7 +98,7 @@ def disambiguate(doc):
 
 
 def main():
-    settings.init('en')
+    settings.init('en', False)
     test_performance_parallel()
 
 

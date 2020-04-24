@@ -2,22 +2,52 @@ import requests
 import os.path as op
 import vcr
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
-from wikidata.client import Client
-import mwclient
+import json
 
 import settings
 
+def cache_request(filepath, params, response):
+    if op.isfile(filepath):
+        with open(filepath, 'r') as fr:
+            all_reqs = json.load(fr)
+            all_reqs[json.dumps(params)] = response
+        with open(filepath, 'w') as fw:
+            json.dump(all_reqs, fw)
+    else:
+        all_reqs = {json.dumps(params): response}
+        with open(filepath, 'w') as fw:
+            json.dump(all_reqs, fw)
+
+    
+def retrieve_response(filepath, params):
+    with open(filepath, 'r') as fr:
+        all_reqs = json.load(fr)
+    search_string = json.dumps(params)
+    if search_string in all_reqs:
+        return all_reqs[search_string]
+    return None
+
 
 def make_mw_request(params):
+    savefile = 'fixtures/cached_requests/all.json'
     '''
     make a request to the MediaWiki API
     '''
+    '''
     with settings.VCR.use_cassette('fixtures/cassettes/all.yaml'):
         url = f'https://{settings.LANG}.wikipedia.org/w/api.php'
-        #r = requests.get(url=url, params=params)
         r = settings.SESSION.get(url=url, params=params)
         return r.json()
+    '''
+    url = f'https://{settings.LANG}.wikipedia.org/w/api.php'
+    if settings.REPLAYING:
+        response = retrieve_response(savefile, params)
+        if response is not None:
+            return response
+    response = settings.SESSION.get(url=url, params=params).json()
+    if (not settings.REPLAYING) and (not settings.PARALLEL):
+        cache_request(savefile, params, response)
+    return response
 
 
 def parallelise_requests(f, *args):
@@ -386,3 +416,47 @@ def get_wikitext(title):
     }
     data = make_mw_request(params)
     return data['parse']['wikitext']['*']
+
+
+def get_random_pages(n):
+    '''
+    get a number of random wikipedia page titles
+
+    :param n: the number of titles to get
+    '''
+    params = {
+        'action': 'query',
+        'format': 'json',
+        'list': 'random',
+        'rnlimit': f'{n}'
+    }
+    data = make_mw_request(params)
+    titles = []
+    for item in data['query']['random']:
+        titles.append(item['title'])
+    return titles
+
+
+def get_interlang_titles(title, langs):
+    '''
+    get the other-languages titles of a given title
+
+    :param title: original title (ususally in English)
+    :param langs: iterable of languages to get titles for
+    :return: dict of lang: title pairs
+    '''
+    params = {
+        'action': 'query',
+        'titles': title,
+        'prop': 'langlinks',
+        'format': 'json'
+    }
+    data = make_mw_request(params)
+    interlang_titles = {}
+    for page in data['query']['pages'].values():
+        if 'langlinks' in page:
+            for d in page['langlinks']:
+                if d['lang'] in langs:
+                    interlang_titles[d['lang']] = d['*']
+
+    return interlang_titles
