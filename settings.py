@@ -43,7 +43,7 @@ class DateHandler:
         self._start = start
 
 
-def init(language='en', replaying=False):
+def init(language='en', replaying=False, verbose=False):
     global date_handler
     global logger
     global LANG
@@ -51,6 +51,7 @@ def init(language='en', replaying=False):
     global SESSION
     global REPLAYING
     global PARALLEL
+    global VERBOSE
 
     date_handler = DateHandler()
     logger = setup_logger()
@@ -62,3 +63,4 @@ def init(language='en', replaying=False):
     SESSION = requests.session()
     REPLAYING = replaying
     PARALLEL = False #only set true when parallelising requests
+    VERBOSE = verbose

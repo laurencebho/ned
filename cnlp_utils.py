@@ -17,6 +17,7 @@ def get_entities(filename):
         sentences = json.load(fr)['sentences']
         for sentence in sentences:
             for mention in sentence['entitymentions']:
-                entities.add(mention['text'])
+                if mention['ner'] in ['PERSON', 'NATIONALITY', 'ORGANIZATION', 'LOCATION']:
+                    entities.add(mention['text'])
     
     return entities

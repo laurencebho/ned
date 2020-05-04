@@ -3,6 +3,7 @@ import os.path as op
 import vcr
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
+import re
 
 import settings
 
@@ -312,15 +313,58 @@ def check_exact_match(title):
         return True
 
 
+def is_disambiguation_page(title):
+    valid_categories = (
+        'Category:Disambiguation pages|'
+        'Category:All article disambiguation pages'
+    )
+    params = {
+        'action': 'query',
+        'format': 'json',
+        'titles': title,
+        'prop': 'categories',
+        'clcategories': valid_categories
+    }
+    data = make_mw_request(params)
+    print(data)
+    pages = data['query']['pages']
+    for page in pages.values():
+        if 'categories' in page:
+            return True
+    return False
+
+
+def is_disambiguation_page_old(title):
+    '''
+    check if the title itself is a disambiguation page
+    '''
+    try:
+        wikitext = get_wikitext(title)
+    except:
+        return False
+    pattern = re.compile(r'\{\{(Disambiguation|disambiguation).*\}\}')
+    links = re.findall(pattern, wikitext)
+    if len(links) > 0:
+        return True
+    return False
+
+
 def check_disambiguation_page(title):
     '''
     determine if a title has an associated disambiguation page
     '''
+    if is_disambiguation_page(title):
+        matches_title = True
+        search_title = title
+    else:
+        matches_title = False
+        search_title = f'{title} (disambiguation)'
+
     params = {
         'action': 'query',
         'format': 'json',
         'prop': 'links',
-        'titles': f'{title} (disambiguation)',
+        'titles': search_title,
         'pllimit': '500'
     }
     data = make_mw_request(params)
@@ -330,14 +374,14 @@ def check_disambiguation_page(title):
     target_phrase = title.lower()
     for page in pages.values():
         if 'missing' in page: #if not a valid disambiguation page
-            return None
+            return None, matches_title
         links = page['links']
         for link in links:
             link_title = link['title'].lower()
             if target_phrase in link_title:
                 if 'disambiguation' not in link_title:
                     candidates.append(link['title'])
-    return candidates
+    return candidates, matches_title
 
 
 def get_redirect(title):
@@ -368,15 +412,19 @@ def get_candidates(title):
 
     :param title: a mention and potential article title
     '''
-    disamb_candidates = check_disambiguation_page(title)
+    all_candidates = []
+    disamb_candidates, matches_title = check_disambiguation_page(title)
     if disamb_candidates is not None:
-        return disamb_candidates
+        all_candidates += disamb_candidates
     redirect = get_redirect(title)
     if redirect is not None:
-        return [redirect]
-    exact_match = check_exact_match(title)
-    if exact_match:
-        return [title]
+        all_candidates +=  [redirect]
+    elif not matches_title:
+        exact_match = check_exact_match(title)
+        if exact_match:
+            if title not in all_candidates: #if not already in the disambiguation page
+                all_candidates += [title]
+    return all_candidates
 
 
 def trim_candidates(candidates, lower_count, fraction, heuristic='pageviews'):

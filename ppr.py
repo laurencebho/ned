@@ -170,6 +170,9 @@ def build_graph(entities):
         #candidates = trim_candidates(candidates, 3, 0.4)
         if candidates is not None:
             settings.logger.info(f'adding candidates for {e}')
+            if settings.VERBOSE:
+                for candidate in candidates:
+                    settings.logger.info(f'  {candidate}')
             all_candidates += candidates
             add_candidates(e, candidates, G)
             total += len(candidates)
