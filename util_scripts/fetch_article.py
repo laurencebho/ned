@@ -21,5 +21,5 @@ data = requests.get(url=url, params=params).json()
 page = next(iter(data['query']['pages'].values()))
 text = page['extract']
 filename = sys.argv[1].replace(' ', '_') + '.txt'
-with open(f'{0}/{1}'.format(sys.argv[2], filename), 'w') as fw:
+with open('{0}/{1}'.format(sys.argv[2], filename), 'w') as fw:
     fw.write(text)
