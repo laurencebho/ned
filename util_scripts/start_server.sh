@@ -6,10 +6,10 @@ cnlp_dir=~/stanford-corenlp-full-2018-10-05;
 if [ $1 = 'zh' ]
 then
     lang="-serverProperties StanfordCoreNLP-chinese.properties"
-elif [$1 = 'es']
+elif [ $1 = 'es' ]
 then
     lang="-serverProperties StanfordCoreNLP-spanish.properties"
-elif [$1 = 'de']
+elif [ $1 = 'de' ]
 then
     lang="-serverProperties StanfordCoreNLP-german.properties"
 else

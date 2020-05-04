@@ -316,7 +316,8 @@ def check_exact_match(title):
 def is_disambiguation_page(title):
     valid_categories = (
         'Category:Disambiguation pages|'
-        'Category:All article disambiguation pages'
+        'Category:All article disambiguation pages|'
+        'Categoría:Wikipedia:Desambiguación'
     )
     params = {
         'action': 'query',
@@ -326,7 +327,6 @@ def is_disambiguation_page(title):
         'clcategories': valid_categories
     }
     data = make_mw_request(params)
-    print(data)
     pages = data['query']['pages']
     for page in pages.values():
         if 'categories' in page:
