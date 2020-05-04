@@ -1,0 +1,803 @@
+A data dependency in computer science is a situation in which a program statement (instruction) refers to the data of a preceding statement. In compiler theory, the technique used to discover data dependencies among statements (or instructions) is called dependence analysis.
+There are three types of dependencies: data, name, and control.
+
+
+== Data dependencies ==
+Assuming statement 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   and 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+  , 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   depends on 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   if:
+
+  
+    
+      
+        [
+        I
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        O
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ]
+        ∪
+        [
+        O
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        I
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ]
+        ∪
+        [
+        O
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        O
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ]
+        ≠
+        ∅
+      
+    
+    {\displaystyle [I(S_{1})\cap O(S_{2})]\cup [O(S_{1})\cap I(S_{2})]\cup [O(S_{1})\cap O(S_{2})]\neq \varnothing }
+  
+where:
+
+  
+    
+      
+        I
+        (
+        
+          S
+          
+            i
+          
+        
+        )
+      
+    
+    {\displaystyle I(S_{i})}
+   is the set of memory locations read by 
+  
+    
+      
+        
+          S
+          
+            i
+          
+        
+      
+    
+    {\displaystyle S_{i}}
+   and
+
+  
+    
+      
+        O
+        (
+        
+          S
+          
+            j
+          
+        
+        )
+      
+    
+    {\displaystyle O(S_{j})}
+   is the set of memory locations written by 
+  
+    
+      
+        
+          S
+          
+            j
+          
+        
+      
+    
+    {\displaystyle S_{j}}
+  
+and there is a feasible run-time execution path from 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   to 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+  This Condition is called Bernstein Condition, named by A. J. Bernstein.
+Three cases exist:
+
+Anti-dependence: 
+  
+    
+      
+        I
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        O
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ≠
+        ∅
+      
+    
+    {\displaystyle I(S_{1})\cap O(S_{2})\neq \varnothing }
+  , 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+        →
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{1}\rightarrow S_{2}}
+   and 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   reads something before 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   overwrites it
+Flow (data) dependence: 
+  
+    
+      
+        O
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        I
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ≠
+        ∅
+      
+    
+    {\displaystyle O(S_{1})\cap I(S_{2})\neq \varnothing }
+  , 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+        →
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{1}\rightarrow S_{2}}
+   and 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   writes before something read by 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+  
+Output dependence: 
+  
+    
+      
+        O
+        (
+        
+          S
+          
+            1
+          
+        
+        )
+        ∩
+        O
+        (
+        
+          S
+          
+            2
+          
+        
+        )
+        ≠
+        ∅
+      
+    
+    {\displaystyle O(S_{1})\cap O(S_{2})\neq \varnothing }
+  , 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+        →
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{1}\rightarrow S_{2}}
+   and both write the same memory location.
+
+
+=== Flow dependency ===
+A Flow dependency, also known as a data dependency or true dependency or read-after-write (RAW), occurs when an instruction depends on the result of a previous instruction:
+
+1. A = 3
+2. B = A
+3. C = B
+
+Instruction 3 is truly dependent on instruction 2, as the final value of C depends on the instruction updating B.  Instruction 2 is truly dependent on instruction 1, as the final value of B depends on the instruction updating A.  Since instruction 3 is truly dependent upon instruction 2 and instruction 2 is truly dependent on instruction 1, instruction 3 is also truly dependent on instruction 1.  Instruction level parallelism is therefore not an option in this example.
+
+
+=== Anti-dependency ===
+An anti-dependency, also known as write-after-read (WAR), occurs when an instruction requires a value that is later updated.  In the following example, instruction 2 anti-depends on instruction 3 — the ordering of these instructions cannot be changed, nor can they be executed in parallel (possibly changing the instruction ordering), as this would affect the final value of A.
+
+1. B = 3
+2. A = B + 1
+3. B = 7
+
+An anti-dependency is an example of a name dependency.  That is, renaming of variables could remove the dependency, as in the next example:
+
+1. B = 3
+N. B2 = B
+2. A = B2 + 1
+3. B = 7
+
+A new variable, B2, has been declared as a copy of B in a new instruction, instruction N.  The anti-dependency between 2 and 3 has been removed, meaning that these instructions may now be executed in parallel. However, the modification has introduced a new dependency: instruction 2 is now truly dependent on instruction N, which is truly dependent upon instruction 1.  As flow dependencies, these new dependencies are impossible to safely remove.
+
+
+=== Output dependency ===
+An output dependency, also known as write-after-write (WAW), occurs when the ordering of instructions will affect the final output value of a variable.  In the example below, there is an output dependency between instructions 3 and 1 — changing the ordering of instructions in this example will change the final value of A, thus these instructions cannot be executed in parallel.
+
+1. B = 3
+2. A = B + 1
+3. B = 7
+
+As with anti-dependencies, output dependencies are name dependencies.  That is, they may be removed through renaming of variables, as in the below modification of the above example:
+
+1. B2 = 3
+2. A = B2 + 1
+3. B = 7
+
+A commonly used naming convention for data dependencies is the following: Read-after-Write or RAW (flow dependency),  Write-After-Read or WAR (anti-dependency), or Write-after-Write or WAW (output dependency).
+
+
+== Control Dependency ==
+An instruction B has a control dependency on a preceding instruction A if the outcome of A determines whether B should be executed or not. In the following example, the instruction 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   has a control dependency on instruction 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+  . However, 
+  
+    
+      
+        
+          S
+          
+            3
+          
+        
+      
+    
+    {\displaystyle S_{3}}
+   does not depend on 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   because 
+  
+    
+      
+        
+          S
+          
+            3
+          
+        
+      
+    
+    {\displaystyle S_{3}}
+   is always executed irrespective of the outcome of 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+  .
+
+S1.         if (a == b)
+S2.             a = a + b
+S3.         b = a + b
+
+Intuitively, there is control dependence between two statements A and B if
+
+B could be possibly executed after A
+The outcome of the execution of A will determine whether B will be executed or not.A typical example is that there are control dependences between the condition part of an if statement and the statements in its true/false bodies.
+A formal definition of control dependence can be presented as follows:
+A statement 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   is said to be control dependent on another statement 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   iff
+
+there exists a path 
+  
+    
+      
+        P
+      
+    
+    {\displaystyle P}
+   from 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   to 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   such that every statement 
+  
+    
+      
+        
+          S
+          
+            i
+          
+        
+      
+    
+    {\displaystyle S_{i}}
+   ≠ 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   within 
+  
+    
+      
+        P
+      
+    
+    {\displaystyle P}
+   will be followed by 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   in each possible path to the end of the program and
+
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   will not necessarily be followed by 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+  , i.e. there is an execution path from 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+   to the end of the program that does not go through 
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+  .Expressed with the help of (post-)dominance the two conditions are equivalent to
+
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   post-dominates all 
+  
+    
+      
+        
+          S
+          
+            i
+          
+        
+      
+    
+    {\displaystyle S_{i}}
+  
+
+  
+    
+      
+        
+          S
+          
+            2
+          
+        
+      
+    
+    {\displaystyle S_{2}}
+   does not post-dominate 
+  
+    
+      
+        
+          S
+          
+            1
+          
+        
+      
+    
+    {\displaystyle S_{1}}
+  
+
+
+=== Construction of Control Dependences ===
+Control dependences are essentially the dominance frontier in the reverse graph of the control flow graph (CFG). Thus, one way of constructing them, would be to construct the post-dominance frontier of the CFG, and then reversing it to obtain a control dependence graph.
+The following is a pseudo-code for constructing the post-dominance frontier:
+
+for each X in a bottom-up traversal of the dominator tree do:
+  PostDominanceFrontier(X) ← ∅
+  for each Y ∈ Predecessors(X) do:
+    if immediatePostDominator(Y) ≠ X:
+      then PostDominanceFrontier(X) ← PostDominanceFrontier(X) ∪ {Y}
+  done
+  for each Z ∈ Children(X) do:
+    for each Y ∈ PostDominanceFrontier(Z) do:
+      if immediatePostDominator(Y) ≠ X:
+        then PostDominanceFrontier(X) ← PostDominanceFrontier(X) ∪ {Y}
+    done
+  done
+
+Here, Children(X) is the set of nodes in the CFG that are post-dominated by X, and Predecessors(X) are the set of nodes in the CFG that directly precede X in the CFG.
+Once the post-dominance frontier map is computed, reversing it will result in a map from the nodes in the CFG to the nodes that have a control dependence on them.
+
+
+== Implications ==
+Conventional programs are written assuming the sequential execution model. Under this model, instructions execute one after the other, atomically (i.e., at any given point in time, only one instruction is executed) and in the order specified by the program.
+However, dependencies among statements or instructions may hinder parallelism — parallel execution of multiple instructions, either by a parallelizing compiler or by a processor exploiting instruction-level parallelism. Recklessly executing multiple instructions without considering related dependences may cause danger of getting wrong results, namely hazards.
+
+
+== References ==

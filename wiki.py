@@ -66,7 +66,6 @@ def get_pageviews(title):
     make a request to the Wikimedia API to get
     the pageviews of a page by title
     '''
-    start
     url=(
         'https://wikimedia.org/api/rest_v1/'
         'metrics/'

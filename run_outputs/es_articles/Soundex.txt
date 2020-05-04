@@ -1,0 +1,16 @@
+Soundex es un algoritmo fonético, un algoritmo para indexar nombre por su sonido, al ser pronunciados en Inglés. El objetivo básico de este algoritmo es codificar de la misma forma los nombres con la misma pronunciación. Soundex es el algoritmo fonético conocido más ampliamente y es usada en ocasiones (de forma incorrecta) para describir el "algoritmo fonético".
+Soundex fue desarrollado por Robert Russell y Margaret Odell y patentado en 1918 y 1922. Una variación llamada American Soundex fue desarrollada en 1930 para realizar un análisis retrospectivo del censo de los Estados Unidos de América entre los años 1890 y 1920. El código de Soundex tomó notoriedad en los años 60 cuando protagonizó varios artículos en Communications of the ACM y Journal of the ACM de la Association for Computing Machinery, y especialmente al ser descrito en la obra maestra de Donald Knuth, The Art of Computer Programming.
+El código Soundex para un nombre consiste en una letra seguida de tres números: la letra es la primera letra del nombre, y el número codifica el resto de consonantes. Las consonantes que suenan de forma similar comparten el mismo número así, por ejemplo, la B, F, P y V son codificadas como 1. Las vocales pueden afectar la codificación, pero nunca se codifican directamente a menos que aparezcan al principio de los nombres.
+Como respuesta a deficiencias en el algoritmo Soundex, Lawrence Philips desarrolló el algoritmo Metaphone para el mismo propósito.
+El algoritmo Soundex Daitch-Mokotoff fue desarrollado por Gary Mokotoff y Randy Daitch para solucionar los problemas al aplicar el algoritmo de Russell a los judíos con apellidos germánicos o eslavos (como Moskowitz vs. Moskovitz o Levine vs. Lewin). Este algoritmo es mucho más complejo que el de Russell.
+
+
+== Enlaces externos ==
+https://web.archive.org/web/20020202130604/http://www.nara.gov/genealogy/soundex/soundex.html
+Daitch-Mokotoff: http://www.avotaynu.com/soundex.html
+Daitch-Mokotoff: http://www.jewishgen.org/infofiles/soundex.html#DM
+
+
+=== Implementaciones ===
+Freely available Soundex, Metaphone, and Double Metaphone implementation in Java at http://jakarta.apache.org/commons codec project
+Text::Soundex Módulo Perl en CPAN

@@ -1,0 +1,78 @@
+Various measures of paper quantity have been and are in use.  Although there are no S.I. units such as quires and bales, there are ISO and DIN standards for the ream. Expressions used here include U.S. Customary units.
+
+
+== Units ==
+Writing paper measurements
+25 sheets = 1 quire
+500 sheets = 20 quires = 1 ream
+1,000 sheets = 40 quires = 2 reams = 1 bundle5,000 sheets = 200 quires = 10 reams = 5 bundles = 1 bale'Short' paper measurements
+24 sheets = 1 'short' quire
+480 sheets = 20 'short' quires = 1 'short' ream
+960 sheets = 40 'short' quires = 2 'short' reams = 1 'short' bundle
+4,800 sheets = 200 'short' quires = 10 'short' reams = 5 'short' bundles = 1 'short' balePosters and printing measurements
+516 sheets (= 21½ 'short' quires) = 1 printer's ream
+1,032 sheets = 2 printer's reams = 1 printer's bundle
+5,160 sheets = 5 printer's bundles = 1 printer's baleCover and Index paper
+250 sheets = 1 ream
+
+
+== Quire ==
+A quire of paper is a measure of paper quantity. The usual meaning is 25 sheets of the same size and quality: ​1⁄20 of a ream of 500 sheets. Quires of 25 sheets are often used for machine-made paper, while quires of 24 sheets are often used for handmade or specialised paper of 480-sheet reams. (As an old UK and US measure, in some sources, a quire was originally 24 sheets.) Quires of 15, 18 or 20 sheets have also been used, depending on the type of paper. 
+
+
+=== Nomenclature ===
+The current word "quire" derives from OE "quair" or "guaer", from OF "quayer", "cayer", (cf. modern Fr. cahier), from L. quaternum, "by fours", "fourfold". Later, when bookmaking switched to using paper and it became possible to easily stitch 5 to 7 sheets at a time, the association of "quaire" with "four" was quickly lost.
+
+
+=== History ===
+In the Middle Ages, a quire (also called a "gathering") was most often formed of 4 folded sheets of vellum or parchment, i.e. 8 leaves, 16 sides. The term "quaternion" (or sometimes quaternum) designates such a quire. A quire made of a single folded sheet (i.e. 2 leaves, 4 sides) is a "bifolium" (plural "bifolia"); a "binion" is a quire of two sheets (i.e. 4 leaves, 8 sides); and a "quinion" is five sheets (10 leaves, 20 sides). This last meaning is preserved in the modern Italian term for quire, quinterno di carta.
+Formerly, when paper was packed at the paper mill, the top and bottom quires were made up of slightly damaged sheets ("outsides") to protect the good quires ("insides"). These outside quires were known as "cassie quires" (from Fr. cassée, "broken"), or "cording quires" and had only 20 sheets to the quire. The printer William Caslon in a book published in 1770 mentions both 24- and 25-sheet quires; he also details printer's wastage, and the sorting and recycling of damaged cassie quires. An 1826 French manual on typography complained that cording quires (usually containing some salvageable paper) from the Netherlands barely contained a single good sheet.It also became the name for any booklet small enough to be made from a single quire of paper. Simon Winchester, in The Surgeon of Crowthorne, cites a specific number, defining quire as "a booklet eight pages thick." Several European words for quire keep the meaning of "book of paper": Ger. Buch von Papier, Dan. bog papir, Du. bock papier.
+In blankbook binding, quire is a term indicating 80 pages.
+
+
+== Ream ==
+
+A ream of paper is a quantity of sheets of the same size and quality. International standards organizations define the ream as 500 identical sheets. This ream of 500 sheets (20 quires of 25 sheets) is also known as a 'long' ream, and is gradually replacing the old value of 480 sheets, now known as a 'short' ream. Reams of 472 and 516 sheets are still current, but in retail outlets paper is typically sold in reams of 500. As an old UK and US unit, a perfect ream was equal to 516 sheets.Certain types of specialist papers such as tissue paper, greaseproof paper, handmade paper, and blotting paper are still sold (especially in the UK) in 'short' reams of 480 sheets (20 quires of 24 sheets). However, the commercial use of the word 'ream' for quantities of paper other than 500 is now deprecated by such standards as ISO 4046. In Europe, the DIN 6730 standard for Paper and Board includes a definition of 1 ream of A4 80gsm (80 g/m2) paper equals 500 sheets.
+
+
+=== Nomenclature ===
+The word 'ream' derives from Old French reyme, from Spanish resma, from Arabic rizmah "bundle" (of paper), from rasama, "collect into a bundle". (The Moors brought manufacture of cotton paper to Spain.)  Early variant rym (late 15c.) suggests a Dutch influence. (cf. Du. riem), probably during the time of Spanish Habsburg control of the Netherlands.
+
+
+=== History ===
+The number of sheets in a ream has varied locally over the centuries, often according to the size and type of paper being sold. Reams of 500 sheets (20 quires of 25 sheets) were known in England in c1594; in 1706 a ream was defined as 20 quires, either 24 or 25 sheets to the quire. In 18th- and 19th-century Europe, the size of the ream varied widely. In Lombardy a ream of music paper was 450 or 480 sheets; in Britain, Holland and Germany a ream of 480 sheets was common; in the Veneto it was more frequently 500. Some paper manufacturers counted 546 sheets (21 quires of 26 sheets). J.S. Bach's manuscript paper at Weimar was ordered by the ream of 480 sheets. In 1840, a ream in Lisbon was 17 quires and 3 sheets = 428 sheets, and a double ream was 18 quires and 2 sheets = 434 sheets; and in  Bremen, blotting or packing paper was sold in reams of 300 (20 quires of 15 sheets). A mid-19th century Milanese-Italian dictionary has an example for a risma (ream) as being either 450 or 480 sheets.In the UK in 1914, paper was sold using the following reams:
+472 sheets – Mill ream (18 short quires of 24 sheets of 'insides', 2 cording quires of 20 sheets of 'outsides')
+480 sheets – (20 short quires of 24 sheets) – now called 'short' ream (As an old UK and US measure, in some sources, a ream was previously equal to 480 sheets.)
+500 sheets – (20 quires of 25 sheets) – now also called 'long' ream
+504 sheets – Stationer's ream (21 short quires)
+516 sheets – Printer's ream (21½ short quires) – also called 'perfect ream'Reams of 500 sheets were mostly used only for newsprint. Since the late 20th century, the 500-sheet ream has become the de facto international standard.
+
+
+== Bundle ==
+A paper bundle is a quantity of sheets of paper, currently standardized as 1,000 sheets. A bundle consists of 2 reams or 40 quires.  As an old UK and US measure, it was previously equal to 960 sheets.When referring to chipboard, there are two standards in the US. In general, a package of approximately 50 pounds of chipboard is called a bundle. Thus, a bundle of 22 point chipboard (0.022" thick) 24" × 38", with each sheet weighing 0.556 pounds, contains 90 sheets. However, chipboard sold in size 11" × 17" and smaller is packaged and sold as bundles of 25 pounds.
+
+
+== Bale ==
+A paper bale is a quantity of sheets of paper, currently standardized as 5,000 sheets. A bale consists of 5 bundles, 10 reams or 200 quires.  As an old UK and US measure, it was previously equal to 4800 sheets.
+
+
+== See also ==
+History of paper
+History of printing
+Paper density
+Paper size
+Book size
+Octavo
+
+
+== Notes ==
+
+
+== References ==
+
+
+== External links ==
+ream (rm) at A Dictionary of Units of Measurement
+ream at The Online Quantinary (yet see also quire at the same site for historical evidence of 500-sheet reams as early as 1590.)
+Ream weight (Measurement) at the Encyclopædia Britannica
+Ream on Paper Dictionary
