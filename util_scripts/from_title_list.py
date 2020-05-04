@@ -9,7 +9,7 @@ run like:
 import requests
 import sys
 
-url = f'https://{sys.argv[3]}.wikipedia.org/w/api.php'
+url = 'https://{0}.wikipedia.org/w/api.php'.format(sys.argv[3])
 filename = sys.argv[1]
 savedir = sys.argv[2]
 
@@ -28,6 +28,6 @@ with open(filename) as fr:
         data = requests.get(url=url, params=params).json()
         page = next(iter(data['query']['pages'].values()))
         text = page['extract']
-        savefile = f'{savedir}/{line.replace(" ", "_")}.txt' #save with underscores in name
+        savefile = '{0}/{1}.txt'.format(savedir, line.replace(" ", "_")) #save with underscores in name
         with open(savefile, 'w') as fw:
             fw.write(text)

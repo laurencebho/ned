@@ -34,7 +34,7 @@ def count_correct(truthset, testset):
     correct, total = 0, 0
     for mention, title in testset.items():
         if mention in truthset:
-            if f'http://en.wikipedia.org/wiki/{title}' == truthset[mention]:
+            if 'http://en.wikipedia.org/wiki/{0}'.format(title) == truthset[mention]:
                 correct += 1
             total += 1
     return correct, total
@@ -50,12 +50,12 @@ def test_performance():
         settings.logger.info(data)
         correct, total = count_correct(aida_dict[doc], disambiguations)
         percentage = 100 * correct / total
-        settings.logger.info(f'accuracy for {doc}: {percentage}%')
+        settings.logger.info('accuracy for {0}: {1}%'.format(doc, percentage))
         grand_correct += correct
         grand_total += total
     
     final_percentage = 100 * grand_correct / grand_total
-    print(f'overall accuracy: {final_percentage}%')
+    print('overall accuracy: {0}%'.format(final_percentage))
     
 
 def test_performance_parallel():
@@ -74,15 +74,15 @@ def test_performance_parallel():
             #perform the more computationally intense step not in parallel
             disambiguations = analyse_graph(G, links_dict, backlinks_count_dict)
             correct, total = count_correct(aida_dict[doc_name], disambiguations)
-            print(f'{doc_name} has {total} total terms of which {correct} are correct')
+            print('{0} has {1} total terms of which {2} are correct'.format(doc_name, total, correct))
             percentage = 100 * correct / total
-            settings.logger.info(f'accuracy for {doc_name}: {percentage}%')
+            settings.logger.info('accuracy for {0}: {1}%'.format(doc_name, percentage))
             grand_correct += correct
             grand_total += total
             print('another one')
     
     final_percentage = 100 * grand_correct / grand_total
-    print(f'overall accuracy: {final_percentage}%')
+    print('overall accuracy: {0}%'.format(final_percentage))
 
 
 def disambiguate(doc):
@@ -93,7 +93,7 @@ def disambiguate(doc):
     disambiguations = ned(entities)
     correct, total = count_correct(doc, disambiguations)
     percentage = 100 * correct / total
-    settings.logger.info(f'accuracy for {doc}: {percentage}%')
+    settings.logger.info('accuracy for {0}: {1}%'.format(doc, percentage))
     return correct, total
 
 

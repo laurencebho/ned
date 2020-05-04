@@ -21,11 +21,11 @@ while count < 100:
             
             if add_to_ds:
                 with open('wikipedia_dataset/titles_zh.txt', 'a') as fw:
-                    fw.write(f'{title}\n')
+                    fw.write('{0}\n'.format(title))
                 
                 for lang in languages:
-                    with open(f'wikipedia_dataset/titles_{lang}.txt', 'a') as fw:
-                        fw.write(f'{interlang_titles[lang]}\n')
+                    with open('wikipedia_dataset/titles_{0}.txt'.format(lang), 'a') as fw:
+                        fw.write('{0}\n'.format(interlang_titles[lang]))
 
-                print(f'{title}, {interlang_titles["es"]}, {interlang_titles["de"]}, {interlang_titles["en"]}')
+                #print(f'{title}, {interlang_titles["es"]}, {interlang_titles["de"]}, {interlang_titles["en"]}')
                 count += 1

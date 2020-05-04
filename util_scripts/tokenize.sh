@@ -5,7 +5,7 @@
 # $2 = save directory
 #
 # Run example:
-# ./single_title.sh ~/code/proj/ppr/demo/articles/name.txt ~/code/proj/ppr/demo/tokenized
+# ./tokenize.sh ~/code/proj/ppr/demo/articles/name.txt ~/code/proj/ppr/demo/tokenized
 
 #cnlp_dir=~/stanford-corenlp-full-2018-10-05;
 current=$(pwd);

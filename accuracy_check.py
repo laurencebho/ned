@@ -97,12 +97,12 @@ def main():
     print('===============')
     print()
     for row in marked:
-        s = f'Mention: {row[0]}    Disambiguation: {row[1]}    Wikipedia link: {row[2]}    Correct: {row[3]}'
+        s = 'Mention: {0}    Disambiguation: {1}    Wikipedia link: {2}    Correct: {3}'.format(row[0], row[1], row[2], row[3])
         if row[3] == 'Yes':
             settings.logger.warn(s)
         else: settings.logger.error(s)
     print()
-    settings.logger.info(f'Accuracy on article "{args.title}": {accuracy}%')
+    settings.logger.info('Accuracy on article "{0}": {1}%'.format(args.title, accuracy))
 
 
 if __name__ == '__main__':

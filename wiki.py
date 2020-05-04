@@ -40,7 +40,7 @@ def make_mw_request(params):
         r = settings.SESSION.get(url=url, params=params)
         return r.json()
     '''
-    url = f'https://{settings.LANG}.wikipedia.org/w/api.php'
+    url = 'https://{0}.wikipedia.org/w/api.php'.format(settings.LANG)
     if settings.REPLAYING:
         response = retrieve_response(savefile, params)
         if response is not None:
@@ -66,6 +66,7 @@ def get_pageviews(title):
     make a request to the Wikimedia API to get
     the pageviews of a page by title
     '''
+    start
     url=(
         'https://wikimedia.org/api/rest_v1/'
         'metrics/'
@@ -74,11 +75,12 @@ def get_pageviews(title):
         'en.wikipedia/'
         'all-access/'
         'all-agents/'
-        f'{title}/'
+        '{0}/'
         'monthly/'
-        f'{settings.date_handler.start}/'
-        f'{settings.date_handler.end}'
-    )
+        '{1}/'
+        '{2}'
+    ).format(title, settings.date_handler.start, settings.date_handler.end)
+
     r = requests.get(url=url)
     data = r.json()
     monthly_views = data['items']
@@ -358,7 +360,7 @@ def check_disambiguation_page(title):
         search_title = title
     else:
         matches_title = False
-        search_title = f'{title} (disambiguation)'
+        search_title = '{0} (disambiguation)'.format(title)
 
     params = {
         'action': 'query',
@@ -476,7 +478,7 @@ def get_random_pages(n):
         'action': 'query',
         'format': 'json',
         'list': 'random',
-        'rnlimit': f'{n}'
+        'rnlimit': str(n)
     }
     data = make_mw_request(params)
     titles = []

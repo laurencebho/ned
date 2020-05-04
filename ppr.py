@@ -169,19 +169,19 @@ def build_graph(entities):
         candidates = get_candidates(e)
         #candidates = trim_candidates(candidates, 3, 0.4)
         if candidates is not None:
-            settings.logger.info(f'adding candidates for {e}')
+            settings.logger.info('adding candidates for {0}'.format(e))
             if settings.VERBOSE:
                 for candidate in candidates:
-                    settings.logger.info(f'  {candidate}')
+                    settings.logger.info('  {0}'.format(candidate))
             all_candidates += candidates
             add_candidates(e, candidates, G)
             total += len(candidates)
-    settings.logger.info(f'total nodes: {total}')
+    settings.logger.info('total nodes: {0}'.format(total))
     settings.logger.info('fetching links for all candidates')
     links_dict = generate_links_dict(all_candidates)
     #backlinks_count_dict = create_backlinks_count_dict(all_candidates)
     backlinks_count_dict = {}
-    settings.logger.info(f'adding edges')
+    settings.logger.info('adding edges to knowledge graph')
     add_edges(G, all_candidates, links_dict)
     return G, links_dict, {}
 
@@ -204,19 +204,22 @@ def ned(entities):
         candidates = get_candidates(e)
         #candidates = trim_candidates(candidates, 3, 0.4)
         if candidates is not None:
-            settings.logger.info(f'adding candidates for {e}')
+            settings.logger.info('adding candidates for {0}'.format(e))
+            if settings.VERBOSE:
+                for candidate in candidates:
+                    settings.logger.info('    {0}'.format(candidate))
             all_candidates += candidates
             add_candidates(e, candidates, G)
             total += len(candidates)
-    settings.logger.info(f'total nodes: {total}')
-    settings.logger.info('fetching links for all candidates')
+    settings.logger.info('total nodes: {0}'.format(total))
+    settings.logger.info('fetching outgoing links for all candidate articles')
     links_dict = generate_links_dict(all_candidates)
     #backlinks_count_dict = create_backlinks_count_dict(all_candidates)
     backlinks_count_dict = {}
-    settings.logger.info(f'adding edges')
+    settings.logger.info('adding edges to knowledge graph')
     add_edges(G, all_candidates, links_dict)
 
-    settings.logger.info(f'performing PPR')
+    settings.logger.info('running PPR on knowledge graph')
     G, S = manual_ppr(G, 20, 0.85)
     compute_final_scores(G, S, links_dict, backlinks_count_dict)
     disambiguations = collect_disambiguations(G)
@@ -224,7 +227,7 @@ def ned(entities):
 
 
 def collect_disambiguations(G):
-    settings.logger.info('collecting results')
+    settings.logger.info('aggregating final scores')
     disambiguations = {}
     scores = {}
     for i in G.nodes():
