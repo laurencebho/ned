@@ -218,6 +218,10 @@ def ned(entities):
     backlinks_count_dict = {}
     settings.logger.info('adding edges to knowledge graph')
     add_edges(G, all_candidates, links_dict)
+    if settings.VERBOSE:
+        pos = nx.spring_layout(G)
+        nx.draw(G, pos, node_size=20, font_size=8)
+        plt.savefig('plots/knowledge_graph.png', format='PNG')
 
     settings.logger.info('running PPR on knowledge graph')
     G, S = manual_ppr(G, 20, 0.85)
